@@ -18,7 +18,7 @@ install_manifest.txt
 
 # Libraries
 *.lib
-*.a
+#*.a
 *.la
 *.lo
 
@@ -42,6 +42,9 @@ install_manifest.txt
 
 # Prerequisites
 *.d
+
+# Tmp string files
+*.cmp
 
 # My Executables
 main
