@@ -259,7 +259,7 @@ int consultaRegistro(int chave, Registro *registro_retorno, int *endereco_inseri
 
             /* Feche o arquivo e retorne a chave encontrada */
             fclose(arquivo);
-            return endereco_hash;
+            return hash_computado;
         }
         else if(registro_encontrado.chave == CHAVE_NULA){
             /* Se não existem mais chaves para consulta para a execução do for */

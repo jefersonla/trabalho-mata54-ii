@@ -1,14 +1,42 @@
-chave: 20
-jose
-30
-0: vazio
-1: vazio
-2: 13 carlos 20
-3: vazio
-4: 24 maria 13
-5: vazio
-6: vazio
-7: vazio
+0: 0 vaca 10
+1: 11 cavalo 5
+2: 12 camelo 15
+3: 91 girafa 25
+4: 44 tartaruga 100
+5: 25 pinguim 10
+6: 105 lontra 4
+7: 2 torcedor vitoria 24
 8: vazio
-9: 20 jose 30
+9: vazio
 10: vazio
+2.6
+0: 0 vaca 10
+1: 11 cavalo 5
+2: 1808 ufba 1808
+3: 91 girafa 25
+4: 44 tartaruga 100
+5: 25 pinguim 10
+6: 105 lontra 4
+7: 6 rayman 16
+8: 8 barca > real 16
+9: 33 ubisoft 33
+10: 1 dcc ufba 1
+chave nao encontrada: 2
+chave: 33
+ubisoft
+33
+chave: 25
+pinguim
+10
+0: vazio
+1: 11 cavalo 5
+2: vazio
+3: 91 girafa 25
+4: vazio
+5: 25 pinguim 10
+6: vazio
+7: 6 rayman 16
+8: 8 barca > real 16
+9: 33 ubisoft 33
+10: 1 dcc ufba 1
+2.0

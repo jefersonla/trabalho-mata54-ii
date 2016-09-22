@@ -49,6 +49,7 @@ add_custom_command(
         COMMAND main < tests/teste03.a > tests/saida03.cmp
         COMMAND main < tests/teste03.b >> tests/saida03.cmp
         COMMAND rm trabalho.bin
+
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

@@ -1,14 +1,22 @@
-chave: 20
-jose
-30
+chave nao encontrada: 30
+chave ja existente: 30
+1.3
 0: vazio
-1: vazio
-2: 13 carlos 20
+1: 42 pikachu 69
+2: vazio
 3: vazio
-4: 24 maria 13
+4: vazio
 5: vazio
 6: vazio
 7: vazio
-8: vazio
-9: 20 jose 30
+8: 30 poney 2
+9: 20 vaca 12
 10: vazio
+chave: 30
+poney
+2
+chave: 42
+pikachu
+69
+chave nao encontrada: 100
+1.3
