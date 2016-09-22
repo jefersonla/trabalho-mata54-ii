@@ -5,6 +5,20 @@ Repositorio com o trabalho de MATA54, disciplina de Estruturas de Dados e Algori
 ## Introdução
 Implementação de Tabela Hash em Arquivo cusando o metodo de colisão Hashing duplo
 
+## Execução
+Use o comando abaixo para compilar o projeto
+
+```sh
+cmake .
+make
+```
+
+Use make test para executar os testes
+
+```sh
+make test
+```
+
 ## Aluno
 * Jeferson Lima de Almeida
 
