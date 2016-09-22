@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 2.4)
 project(TrabalhoMATA54)
 
 # Flags for our entire system
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm")
-set(CMAKE_C_FLAGS "${CMAKE_DEBUG_C_FLAGS} -lm -g -D DEBUG")
-set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} -lm)
+set(CMAKE_DEBUG_C_FLAGS ${CMAKE_DEBUG_C_FLAGS} -lm -g -D DEBUG)
+#set(CMAKE_VERBOSE_MAKEFILE on)
 
 # We will tell the system that our source will be
 set(SOURCE_FILES main.c)
@@ -13,11 +13,10 @@ set(SOURCE_FILES main.c)
 # And this will be our executable
 # Debug Executable
 add_executable(main_dbg ${SOURCE_FILES})
-target_compile_options(main_dbg {CMAKE_DEBUG_C_FLAGS})
+target_compile_options(main_dbg PUBLIC "${CMAKE_DEBUG_C_FLAGS}")
 
 # Release Executable
 add_executable(main ${SOURCE_FILES})
-target_compile_options(main {CMAKE_C_FLAGS})
 
 # Perform tests
 # Test 1
@@ -25,9 +24,9 @@ add_custom_command(
         TARGET main
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "Running First Test $<TARGET_FILE_NAME:main> ..."
-        COMMAND rm trabalho.bin
         COMMAND main < tests/teste01.a > tests/saida01.cmp
         COMMAND main < tests/teste01.b >> tests/saida01.cmp
+        COMMAND rm trabalho.bin
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -36,10 +35,10 @@ add_custom_command(
         TARGET main
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "Running Second Test $<TARGET_FILE_NAME:main> ..."
-        COMMAND rm trabalho.bin
         COMMAND main < tests/teste02.a > tests/saida02.cmp
         COMMAND main < tests/teste02.b >> tests/saida02.cmp
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
+        COMMAND rm trabalho.bin
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Test 3
@@ -47,10 +46,10 @@ add_custom_command(
         TARGET main
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "Running Third Test $<TARGET_FILE_NAME:main> ..."
-        COMMAND rm trabalho.bin
         COMMAND main < tests/teste03.a > tests/saida03.cmp
         COMMAND main < tests/teste03.b >> tests/saida03.cmp
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
+        COMMAND rm trabalho.bin
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Compara Os testes
@@ -74,3 +73,6 @@ add_test(
         COMMAND ${CMAKE_COMMAND} -E compare_files saida03 saida03.cmp
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 )
+
+# Ativa os testes
+enable_testing()

@@ -48,7 +48,7 @@ install_manifest.txt
 
 # My Executables
 main
-main_debug
+main_dbg
 
 # My Persistence file
 trabalho.bin
