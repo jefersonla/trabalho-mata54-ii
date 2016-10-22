@@ -6,6 +6,9 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 
+# Build folder
+build/*
+
 # Object files
 *.o
 *.ko
@@ -52,6 +55,9 @@ main_dbg
 
 # My Persistence file
 trabalho.bin
+
+# Building folder
+build/*
 
 # Cmake tests
 Testing/

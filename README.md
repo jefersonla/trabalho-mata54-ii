@@ -1,9 +1,9 @@
-# TrabalhoMATA52
+# TrabalhoMATA54 2
 --
-Repositorio com o trabalho de MATA54, disciplina de Estruturas de Dados e Algoritmos II
+Repositorio com o segundp trabalho de MATA54, disciplina de Estruturas de Dados e Algoritmos II
 
 ## Introdução
-Implementação de Tabela Hash em Arquivo cusando o metodo de colisão Hashing duplo
+TODO
 
 ## Execução
 Use o comando abaixo para compilar o projeto
@@ -11,6 +11,17 @@ Use o comando abaixo para compilar o projeto
 ```sh
 cmake .
 make
+```
+
+Devido a forma como o cmake foi construido é desejável não executar um build dentro do root do sistema
+e sim numa pasta separada para build
+
+```sh
+mkdir build
+cd build
+cmake ../
+make
+make test
 ```
 
 Use make test para executar os testes
