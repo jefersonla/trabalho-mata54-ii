@@ -37,7 +37,11 @@
 //#define DEBUG
 
 /* Alfabeto */
+int alfabeto_index[ULTIMO_CARACTERE] = { -1 };
 char alfabeto[] = "abcdefghijklmnopqrstuvwxyz., ";
+
+/* Minimo entre A e B */
+#define min(A, B)				(A < B ? A : B)
 
 /**
  * Retorna true se o ESTADO for igual ao ESTADO_FINAL.
@@ -69,29 +73,50 @@ char alfabeto[] = "abcdefghijklmnopqrstuvwxyz., ";
 void criaAutomato(int padrao_len, char padrao[],
 		uint8_t delta_table[][ULTIMO_CARACTERE]) {
 	/* Variaveis Auxiliares */
-	int i, j, aux;
+	int j, aux;
 
 	/* Estado atual */
-	int estado;
+	int q;
+
+	/* Caractere atual */
+	int a;
+
+	/* Valor minimo de m + 1 e q + 2 */
+	int k;
 
 	/* Deslocamento efetuado */
 	int deslocamento;
 
+	/* Tamanho do padrão */
+	int m = padrao_len;
+
 	/* Cria a tabela delta */
-	for(estado = 0; estado <= padrao_len; estado++) {
-		for (i = 0; i < TAMANHO_ALFABETO; i++) {
+	for (q = 0; q <= m; q++) {
+		/* Para cada caractere do alfabbeto */
+		for (a = 0; a < TAMANHO_ALFABETO; a++) {
+			/* Escolhe o menor indice */
+			k = min(m + 1, q + 2);
+
+			/* Repetir enquanto o prefixo não for encontrado */
+			do {
+				k--;
+			} while ((k >= 0) && (padrao[k]) != padrao[q + a]);
+
+			/* Armazena o prefixo na tabela delta */
+			delta_table[q][a] = k;
+
 			/* Se o estado ... */
-			if (estado < padrao_len && alfabeto[i] == padrao[estado]) {
-				delta_table[estado][alfabeto[i]] = estado + 1;
+			/*if (q < padrao_len && alfabeto[a] == padrao[q]) {
+				delta_table[q][alfabeto[a]] = q + 1;
 			} else {
 				/* Inicializa o deslocamento */
-				deslocamento = 1;
+			/*deslocamento = 1;
 
 				/* Enquanto o deslocamento for menor que o estado atual */
-				while (deslocamento <= estado) {
+			/*while (deslocamento <= q) {
 					/* Procura por ... */
-					for (j = 0;
-							(j <= (estado - deslocamento))
+			/*for (j = 0;
+							(j <= (q - deslocamento))
 									&& ((j + deslocamento) < padrao_len)
 									&& (padrao[j] == padrao[j + deslocamento]);
 
@@ -99,15 +124,17 @@ void criaAutomato(int padrao_len, char padrao[],
 						;
 
 					/* Se ... */
-					if (j == (estado - deslocamento)
-							&& (padrao[j] == alfabeto[i])) {
-						delta_table[estado][alfabeto[i]] = j + 1;
-						deslocamento = estado + 1;
+			/* if (j == (q - deslocamento)
+							&& (padrao[j] == alfabeto[a])) {
+						delta_table[q][alfabeto[a]] = j + 1;
+						deslocamento = q + 1;
 					}
 
 					deslocamento += 1;
-				}
+
+			 }
 			}
+			 */
 		}
 	}
 }
@@ -155,18 +182,18 @@ void buscaPadrao(int texto_len, char texto[], int padrao_len,
 	int i, j;
 
 	/* Estado atual */
-	int estado;
+	int q;
 
 	/* Estado Final */
 	int estado_final = padrao_len;
 
 	/* Procura pela existência de padrões no texto */
-	for (i = 0, estado = 0; i < texto_len; i++) {
+	for (i = 0, q = 0; i < texto_len; i++) {
 		/* Estado atual é igual ao estado do automato com a posição do texto verificado */
-		estado = delta_table[estado][texto[i]];
+		q = delta_table[q][alfabeto_index[texto[i]]];
 
 		/* Se o estado atual for um estado final do automato então imprimimos a posição */
-		if (isEstadoFinal(estado, estado_final)) {
+		if (isEstadoFinal(q, estado_final)) {
 			printf("%d\n", posicaoDoTexto(i, padrao_len));
 		}
 	}
@@ -211,13 +238,18 @@ int main() {
 	int padrao_len = strlen(padrao);
 
 	/* Tabela delta */
-	uint8_t delta_table[padrao_len][ULTIMO_CARACTERE];
+	uint8_t delta_table[padrao_len][TAMANHO_ALFABETO];
 
 	/* Inicialização da tabela */
 	for (i = 0; i <= padrao_len; i++) {
-		for (j = 0; j < ULTIMO_CARACTERE; j++) {
+		for (j = 0; j < TAMANHO_ALFABETO; j++) {
 			delta_table[i][j] = 0;
 		}
+	}
+
+	/* Inicializa a tabela de indices */
+	for (i = 0; i < TAMANHO_ALFABETO; i++) {
+		alfabeto_index[alfabeto[i]] = i;
 	}
 
 	/* Cria automato */
