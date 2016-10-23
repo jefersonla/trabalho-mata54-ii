@@ -26,6 +26,7 @@
 
 /* Tamanho do alfabeto */
 #define TAMANHO_ALFABETO 		29
+//#define TAMANHO_ALFABETO 		2
 
 /* Ultimo caractere do nosso alfabeto */
 #define ULTIMO_CARACTERE 		122
@@ -39,6 +40,10 @@
 /* Alfabeto */
 int alfabeto_index[ULTIMO_CARACTERE] = { -1 };
 char alfabeto[] = "abcdefghijklmnopqrstuvwxyz., ";
+//char alfabeto[] = "ab";
+
+/* Padrao global */
+char *padrao;
 
 /* Minimo entre A e B */
 #define min(A, B)				(A < B ? A : B)
@@ -63,6 +68,33 @@ char alfabeto[] = "abcdefghijklmnopqrstuvwxyz., ";
 #define posicaoDoTexto(POSICAO_ATUAL, TAMANHO_PADRAO) ((POSICAO_ATUAL - TAMANHO_PADRAO) + 1)
 
 /**
+ * Checa o maior prefixo do sufixo.
+ *
+ * @param k Prefixo.
+ * @param q Estado atual.
+ * @param a Caractere Atual.
+ * @return
+ */
+int checaSequencia(int k, int q, int a) {
+	/* Variaveis auxiliares */
+	int i, j;
+
+	/* Se o caractere a não for sufixo do padrao na posição k retorna falso */
+	if (padrao[k] != alfabeto[a]) {
+		return 0;
+	}
+
+	/* Verifica se o prefixo é igual ao sufixo */
+	for (i = k - 1, j = q;
+			((i >= 0) && (j >= 0) && padrao[i] == padrao[j]);
+			i--, j--)
+		;
+
+	/* Retorna se encontramos este sufixo ou não */
+	return (i < 0);
+}
+
+/**
  * Cria a tabela delta que representa a execução do automato representado pelo padrão.
  *
  * @param texto_len Tamanho do texto.
@@ -70,11 +102,7 @@ char alfabeto[] = "abcdefghijklmnopqrstuvwxyz., ";
  * @param padrao_len Tamanho do padrão.
  * @param delta_table Tabela delta com o automato gerado.
  */
-void criaAutomato(int padrao_len, char padrao[],
-		uint8_t delta_table[][ULTIMO_CARACTERE]) {
-	/* Variaveis Auxiliares */
-	int j, aux;
-
+void criaAutomato(int padrao_len, int delta_table[][TAMANHO_ALFABETO]) {
 	/* Estado atual */
 	int q;
 
@@ -84,9 +112,6 @@ void criaAutomato(int padrao_len, char padrao[],
 	/* Valor minimo de m + 1 e q + 2 */
 	int k;
 
-	/* Deslocamento efetuado */
-	int deslocamento;
-
 	/* Tamanho do padrão */
 	int m = padrao_len;
 
@@ -95,46 +120,15 @@ void criaAutomato(int padrao_len, char padrao[],
 		/* Para cada caractere do alfabbeto */
 		for (a = 0; a < TAMANHO_ALFABETO; a++) {
 			/* Escolhe o menor indice */
-			k = min(m + 1, q + 2);
+			k = min(m + 1, q + 2) - 1;
 
-			/* Repetir enquanto o prefixo não for encontrado */
+			/* Repetir enquanto o maior prefixo do sufixo não for encontrado */
 			do {
-				k--;
-			} while ((k >= 0) && (padrao[k]) != padrao[q + a]);
+				k --;
+			} while ((k >= 0) && (!checaSequencia(k, q - 1, a)));
 
 			/* Armazena o prefixo na tabela delta */
-			delta_table[q][a] = k;
-
-			/* Se o estado ... */
-			/*if (q < padrao_len && alfabeto[a] == padrao[q]) {
-				delta_table[q][alfabeto[a]] = q + 1;
-			} else {
-				/* Inicializa o deslocamento */
-			/*deslocamento = 1;
-
-				/* Enquanto o deslocamento for menor que o estado atual */
-			/*while (deslocamento <= q) {
-					/* Procura por ... */
-			/*for (j = 0;
-							(j <= (q - deslocamento))
-									&& ((j + deslocamento) < padrao_len)
-									&& (padrao[j] == padrao[j + deslocamento]);
-
-							j++)
-						;
-
-					/* Se ... */
-			/* if (j == (q - deslocamento)
-							&& (padrao[j] == alfabeto[a])) {
-						delta_table[q][alfabeto[a]] = j + 1;
-						deslocamento = q + 1;
-					}
-
-					deslocamento += 1;
-
-			 }
-			}
-			 */
+			delta_table[q][a] = k + 1;
 		}
 	}
 }
@@ -146,9 +140,9 @@ void criaAutomato(int padrao_len, char padrao[],
  * @param padrao_len Tamanho do padrão.
  * @param delta_table Tabela delta.
  */
-void imprimeTabela(int padrao_len, uint8_t delta_table[][ULTIMO_CARACTERE]) {
+void imprimeTabela(int padrao_len, int delta_table[][TAMANHO_ALFABETO]) {
 	/* Variaveis auxiliares */
-	int i, j, aux;
+	int i, j;
 
 	/* Texto de entrada */
 	printf("Tabela Delta:\n");
@@ -158,11 +152,10 @@ void imprimeTabela(int padrao_len, uint8_t delta_table[][ULTIMO_CARACTERE]) {
 		for (j = 0; j < TAMANHO_ALFABETO; j++) {
 			if (alfabeto[j] == ' ') {
 				/* Se o carecter for ' ' imprime com apostrofe */
-				printf("[%d, ' ']: %d\n", i, delta_table[i][alfabeto[j]]);
+				printf("[%d, ' ']: %d\n", i, delta_table[i][j]);
 			} else {
 				/* Caso contrário apenas imprime o caractere */
-				printf("[%d, %c]: %d\n", i, alfabeto[j],
-						delta_table[i][alfabeto[j]]);
+				printf("[%d, %c]: %d\n", i, alfabeto[j], delta_table[i][j]);
 			}
 		}
 	}
@@ -177,9 +170,9 @@ void imprimeTabela(int padrao_len, uint8_t delta_table[][ULTIMO_CARACTERE]) {
  * @param delta_table Tabela delta.
  */
 void buscaPadrao(int texto_len, char texto[], int padrao_len,
-		uint8_t delta_table[][ULTIMO_CARACTERE]) {
+		int delta_table[][TAMANHO_ALFABETO]) {
 	/* Variaveis auxiliares */
-	int i, j;
+	int i;
 
 	/* Estado atual */
 	int q;
@@ -190,11 +183,11 @@ void buscaPadrao(int texto_len, char texto[], int padrao_len,
 	/* Procura pela existência de padrões no texto */
 	for (i = 0, q = 0; i < texto_len; i++) {
 		/* Estado atual é igual ao estado do automato com a posição do texto verificado */
-		q = delta_table[q][alfabeto_index[texto[i]]];
+		q = delta_table[q][alfabeto_index[(int) texto[i]]];
 
 		/* Se o estado atual for um estado final do automato então imprimimos a posição */
 		if (isEstadoFinal(q, estado_final)) {
-			printf("%d\n", posicaoDoTexto(i, padrao_len));
+			printf("%d\n", posicaoDoTexto(i + 1, padrao_len));
 		}
 	}
 }
@@ -211,26 +204,26 @@ int main() {
 	/* Variaveis Auxiliares */
 	int i, j;
 
-	/* Lê o tamanho do texto */
-
 	/* Tamanho do Texto */
 	int texto_len;
+
+	/* Lê o tamanho do texto */
 	scanf(" %d", &texto_len);
 
-	/* Lê o texto */
-
 	/* Vetor com Texto */
-	char texto[texto_len + 2];
+	char texto[texto_len + 1];
+
+	/* Lê o texto */
 	clear_newline();
 	scanf("%[^\n]s", texto);
 	clear_newline();
 
-	/* Lê o padrão */
 	/* Assume-se que o padrão não será maior que o tamanho da entrada */
 
 	/* Vetor com o padrão */
-	char padrao[texto_len + 2];
-	clear_newline();
+	padrao = calloc(sizeof(char), texto_len + 1);
+
+	/* Lê o padrão */
 	scanf("%[^\n]s", padrao);
 	clear_newline();
 
@@ -238,7 +231,7 @@ int main() {
 	int padrao_len = strlen(padrao);
 
 	/* Tabela delta */
-	uint8_t delta_table[padrao_len][TAMANHO_ALFABETO];
+	int delta_table[padrao_len + 1][TAMANHO_ALFABETO];
 
 	/* Inicialização da tabela */
 	for (i = 0; i <= padrao_len; i++) {
@@ -249,11 +242,11 @@ int main() {
 
 	/* Inicializa a tabela de indices */
 	for (i = 0; i < TAMANHO_ALFABETO; i++) {
-		alfabeto_index[alfabeto[i]] = i;
+		alfabeto_index[(int) alfabeto[i]] = i;
 	}
 
 	/* Cria automato */
-	criaAutomato(padrao_len, padrao, delta_table);
+	criaAutomato(padrao_len, delta_table);
 
     /* Executa a aplicação enquanto não for escolhida a opção para parar a execução */
     do{
